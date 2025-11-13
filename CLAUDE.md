@@ -100,6 +100,28 @@ labels:
 
 ## Development Rules
 
+### Git & GitHub CLI (CRITICAL)
+
+**Repository Context:**
+- **Your fork**: `Oliver-Sheaky/make-my-server` (origin)
+- **Upstream**: `tomMoulard/make-my-server` (upstream)
+
+**BEFORE Creating Pull Requests:**
+```bash
+# ALWAYS verify the default repository
+gh repo view --json nameWithOwner -q .nameWithOwner
+# MUST output: Oliver-Sheaky/make-my-server
+
+# If incorrect, set default:
+gh repo set-default Oliver-Sheaky/make-my-server
+```
+
+**Creating Pull Requests:**
+- **For your fork** (most common): `gh pr create --base master`
+- **For upstream contributions** (rare): `gh pr create --repo tomMoulard/make-my-server --base master`
+
+**Rule**: NEVER create a PR without first verifying `gh repo view` shows Oliver-Sheaky's fork.
+
 ### YAML Requirements (Enforced by yamllint)
 - **Single quotes** for all strings
 - **2-space indentation**
