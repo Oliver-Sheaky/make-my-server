@@ -142,6 +142,24 @@ yamllint .      # YAML linting
 docker-compose config  # Syntax check
 ```
 
+### Platform-Specific Testing (CRITICAL for Windows)
+**Windows Developers**: ALWAYS run `./test.sh` via WSL, NOT PowerShell/CMD
+
+**Why**: `test_config.yml` is a generated reference file that must use Linux paths for CI compatibility. Running test.sh on Windows generates Windows paths (`c:\Users\...`) which will cause CI failures.
+
+**Commands**:
+```bash
+# Option 1: Run from WSL terminal
+wsl
+cd /mnt/c/Users/Ollie/Documents/Github/make-my-server
+./test.sh
+
+# Option 2: Run directly from Windows
+wsl ./test.sh
+```
+
+**After running**: Always commit the regenerated `test_config.yml` and `.env.default` files.
+
 ---
 
 ## Common Tasks
