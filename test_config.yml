@@ -23,12 +23,22 @@ services:
       PGID: "1000"
       PUID: "1000"
       TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:6767/api/system/health
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 40s
     image: linuxserver/bazarr:v1.2.2
     labels:
       traefik.enable: "true"
       traefik.http.routers.bazarr.middlewares: basic_auth@docker
       traefik.http.routers.bazarr.rule: Host(`bazarr.localhost`)
-      traefik.http.services.bazarr.loadbalancer.server.port: "8080"
+      traefik.http.services.bazarr.loadbalancer.server.port: "6767"
     networks:
       srv: null
     restart: always
@@ -186,6 +196,39 @@ services:
       - type: bind
         source: c:\Users\Ollie\Documents\Github\make-my-server\grafana\grafana
         target: /var/lib/grafana
+        bind:
+          create_host_path: true
+  heimdall:
+    container_name: heimdall
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:80/
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 40s
+    image: lscr.io/linuxserver/heimdall:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.heimdall.entrypoints: websecure
+      traefik.http.routers.heimdall.middlewares: basic_auth@docker
+      traefik.http.routers.heimdall.rule: Host(`heimdall.localhost`)
+      traefik.http.routers.heimdall.tls.certresolver: letsencrypt
+      traefik.http.services.heimdall.loadbalancer.server.port: "80"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\heimdall\config
+        target: /config
         bind:
           create_host_path: true
   homeassistant:
@@ -733,12 +776,22 @@ services:
       PGID: "1000"
       PUID: "1000"
       TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8989/api/v3/health
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 40s
     image: linuxserver/sonarr:4.0.0
     labels:
       traefik.enable: "true"
       traefik.http.routers.sonarr.middlewares: basic_auth@docker
       traefik.http.routers.sonarr.rule: Host(`sonarr.localhost`)
-      traefik.http.services.sonarr.loadbalancer.server.port: "8080"
+      traefik.http.services.sonarr.loadbalancer.server.port: "8989"
     networks:
       srv: null
     restart: always
