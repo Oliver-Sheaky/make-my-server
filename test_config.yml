@@ -88,6 +88,70 @@ services:
         read_only: true
         bind:
           create_host_path: true
+  fivefilters-full-text-rss:
+    container_name: fivefilters-full-text-rss
+    environment:
+      FTR_ADMIN_PASSWORD: ""
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:80/
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: heussd/fivefilters-full-text-rss:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.fivefilters.entrypoints: websecure
+      traefik.http.routers.fivefilters.middlewares: basic_auth@docker
+      traefik.http.routers.fivefilters.rule: Host(`fivefilters.localhost`)
+      traefik.http.routers.fivefilters.tls.certresolver: letsencrypt
+      traefik.http.services.fivefilters.loadbalancer.server.port: "80"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\fivefilters-full-text-rss\cache
+        target: /var/www/html/cache/rss
+        bind:
+          create_host_path: true
+  freshrss:
+    container_name: freshrss
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:80/
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: lscr.io/linuxserver/freshrss:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.freshrss.entrypoints: websecure
+      traefik.http.routers.freshrss.middlewares: basic_auth@docker
+      traefik.http.routers.freshrss.rule: Host(`freshrss.localhost`)
+      traefik.http.routers.freshrss.tls.certresolver: letsencrypt
+      traefik.http.services.freshrss.loadbalancer.server.port: "80"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\freshrss\data
+        target: /config
+        bind:
+          create_host_path: true
   grafana:
     depends_on:
       prometheus:
@@ -151,6 +215,47 @@ services:
       - type: bind
         source: /etc/localtime
         target: /etc/localtime
+        read_only: true
+        bind:
+          create_host_path: true
+  homepage:
+    container_name: homepage
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: homepage.localhost
+      PGID: "1000"
+      PUID: "1000"
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://127.0.0.1:3000/api/healthcheck
+      timeout: 3s
+      interval: 10s
+      retries: 3
+      start_period: 20s
+    image: ghcr.io/gethomepage/homepage:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.homepage.entrypoints: websecure
+      traefik.http.routers.homepage.middlewares: basic_auth@docker
+      traefik.http.routers.homepage.rule: Host(`homepage.localhost`)
+      traefik.http.routers.homepage.tls.certresolver: letsencrypt
+      traefik.http.services.homepage.loadbalancer.server.port: "3000"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\homepage\config
+        target: /app/config
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
         read_only: true
         bind:
           create_host_path: true
@@ -231,6 +336,46 @@ services:
       - type: bind
         source: c:\Users\Ollie\Documents\Github\make-my-server\jupyter\notebooks
         target: /home/jovyan
+        bind:
+          create_host_path: true
+  n8n:
+    container_name: n8n
+    environment:
+      DB_TYPE: sqlite
+      N8N_BASIC_AUTH_ACTIVE: "false"
+      N8N_CORS_ORIGIN: '*'
+      N8N_HOST: n8n.localhost
+      N8N_PROTOCOL: https
+      N8N_SECURE_COOKIE: "true"
+      TZ: Europe/Paris
+      WEBHOOK_URL: https://n8n.localhost/
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:5678/healthz
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: n8nio/n8n:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.n8n.entrypoints: websecure
+      traefik.http.routers.n8n.middlewares: basic_auth@docker
+      traefik.http.routers.n8n.rule: Host(`n8n.localhost`)
+      traefik.http.routers.n8n.tls.certresolver: letsencrypt
+      traefik.http.services.n8n.loadbalancer.server.port: "5678"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\n8n\data
+        target: /home/node/.n8n
         bind:
           create_host_path: true
   nextcloud:
@@ -339,6 +484,85 @@ services:
     networks:
       srv: null
     restart: always
+  nzbhydra2:
+    container_name: nzbhydra2
+    depends_on:
+      sabnzbd:
+        condition: service_started
+        required: true
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:5076/
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: lscr.io/linuxserver/nzbhydra2:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.nzbhydra2.entrypoints: websecure
+      traefik.http.routers.nzbhydra2.middlewares: basic_auth@docker
+      traefik.http.routers.nzbhydra2.rule: Host(`nzbhydra2.localhost`)
+      traefik.http.routers.nzbhydra2.tls.certresolver: letsencrypt
+      traefik.http.services.nzbhydra2.loadbalancer.server.port: "5076"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\nzbhydra2\config
+        target: /config
+        bind:
+          create_host_path: true
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\nzbhydra2\downloads
+        target: /downloads
+        bind:
+          create_host_path: true
+  overseerr:
+    container_name: overseerr
+    depends_on:
+      radarr:
+        condition: service_started
+        required: true
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:5055/
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: lscr.io/linuxserver/overseerr:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.overseerr.entrypoints: websecure
+      traefik.http.routers.overseerr.middlewares: basic_auth@docker
+      traefik.http.routers.overseerr.rule: Host(`overseerr.localhost`)
+      traefik.http.routers.overseerr.tls.certresolver: letsencrypt
+      traefik.http.services.overseerr.loadbalancer.server.port: "5055"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\overseerr\config
+        target: /config
+        bind:
+          create_host_path: true
   portainer:
     image: portainer/portainer
     labels:
@@ -409,6 +633,99 @@ services:
       - type: bind
         source: c:\Users\Ollie\Documents\Github\make-my-server\grafana\prometheus\rules
         target: /etc/prometheus/rules
+        bind:
+          create_host_path: true
+  radarr:
+    container_name: radarr
+    depends_on:
+      nzbhydra2:
+        condition: service_started
+        required: true
+      sabnzbd:
+        condition: service_started
+        required: true
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:7878/api/v3/health
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: lscr.io/linuxserver/radarr:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.radarr.entrypoints: websecure
+      traefik.http.routers.radarr.middlewares: basic_auth@docker
+      traefik.http.routers.radarr.rule: Host(`radarr.localhost`)
+      traefik.http.routers.radarr.tls.certresolver: letsencrypt
+      traefik.http.services.radarr.loadbalancer.server.port: "7878"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\radarr\config
+        target: /config
+        bind:
+          create_host_path: true
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\radarr\downloads
+        target: /downloads
+        bind:
+          create_host_path: true
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\radarr\movies
+        target: /movies
+        bind:
+          create_host_path: true
+  sabnzbd:
+    container_name: sabnzbd
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Europe/Paris
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8080/
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 1m0s
+    image: lscr.io/linuxserver/sabnzbd:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.sabnzbd.entrypoints: websecure
+      traefik.http.routers.sabnzbd.middlewares: basic_auth@docker
+      traefik.http.routers.sabnzbd.rule: Host(`sabnzbd.localhost`)
+      traefik.http.routers.sabnzbd.tls.certresolver: letsencrypt
+      traefik.http.services.sabnzbd.loadbalancer.server.port: "8080"
+    networks:
+      srv: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\sabnzbd\config
+        target: /config
+        bind:
+          create_host_path: true
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\sabnzbd\incomplete-downloads
+        target: /incomplete-downloads
+        bind:
+          create_host_path: true
+      - type: bind
+        source: c:\Users\Ollie\Documents\Github\make-my-server\sabnzbd\downloads
+        target: /downloads
         bind:
           create_host_path: true
   sonarr:
