@@ -4,6 +4,7 @@ include:
   - path: 'fivefilters-full-text-rss/docker-compose.fivefilters.yml'
   - path: 'freshrss/docker-compose.freshrss.yml'
   - path: 'grafana/docker-compose.grafana.yml'
+  - path: 'heimdall/docker-compose.heimdall.yml'
   - path: 'homeassistant/docker-compose.homeassistant.yml'
   - path: 'homepage/docker-compose.homepage.yml'
   - path: 'hugo/docker-compose.hugo.yml'

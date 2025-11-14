@@ -147,13 +147,14 @@ docker-compose config  # Syntax check
 ## Common Tasks
 
 ### Add Service
-1. Create structure: `mkdir service-name && cd service-name && mkdir conf data logs`
+1. Create structure: `mkdir service-name && cd service-name`
 2. Create `docker-compose.servicename.yml` with service definition
-3. Add to master `docker-compose.yml` includes
-4. Create `README.md`
-5. Run `./test.sh` to auto-generate env vars in `.env.default`
-6. Add health check to `.github/workflows/dockerpublish.yml`
-7. Test: `docker-compose config && ./test.sh && docker-compose up -d service-name`
+3. Create `.gitignore` based on volume mounts - ignore all config/data directories (prioritize security - when in doubt, add to .gitignore)
+4. Add to master `docker-compose.yml` includes
+5. Create `README.md`
+6. Run `./test.sh` to auto-generate env vars in `.env.default`
+7. Add health check to `.github/workflows/dockerpublish.yml`
+8. Test: `docker-compose config && ./test.sh && docker-compose up -d service-name`
 
 ### Remove Service
 1. Remove/comment include from `docker-compose.yml`
