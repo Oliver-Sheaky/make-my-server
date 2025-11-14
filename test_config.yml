@@ -33,7 +33,7 @@ services:
       interval: 30s
       retries: 3
       start_period: 40s
-    image: linuxserver/bazarr:v1.2.2
+    image: linuxserver/bazarr:version-v1.5.3
     labels:
       traefik.enable: "true"
       traefik.http.routers.bazarr.middlewares: basic_auth@docker
