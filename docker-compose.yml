@@ -7,8 +7,6 @@ include:
   - path: 'heimdall/docker-compose.heimdall.yml'
   - path: 'homeassistant/docker-compose.homeassistant.yml'
   - path: 'homepage/docker-compose.homepage.yml'
-  - path: 'hugo/docker-compose.hugo.yml'
-  - path: 'jupyter/docker-compose.jupyter.yml'
   - path: 'n8n/docker-compose.n8n.yml'
   - path: 'nextcloud/docker-compose.nextcloud.yml'
   - path: 'nginx/docker-compose.nginx.yml'

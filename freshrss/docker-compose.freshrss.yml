@@ -3,8 +3,8 @@ services:
     image: 'lscr.io/linuxserver/freshrss:${FRESHRSS_IMAGE_VERSION:-latest}'
     container_name: 'freshrss'
     environment:
-      PUID: '${FRESHRSS_PUID:-1000}'
-      PGID: '${FRESHRSS_PGID:-1000}'
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
       TZ: '${TZ:-Europe/Paris}'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:80/']

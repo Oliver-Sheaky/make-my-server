@@ -3,7 +3,7 @@ networks:
 
 services:
   nextcloud:
-    image: 'nextcloud:${NEXTCLOUD_IMAGE_VERSION:-latest}'
+    image: 'nextcloud:${NEXTCLOUD_IMAGE_VERSION:-30}'
     depends_on:
       - 'nextcloud-db'
     healthcheck:
@@ -39,7 +39,7 @@ services:
       - './data:/var/www/html'
 
   nextcloud-db:
-    image: 'mariadb'
+    image: 'mariadb:${MARIADB_IMAGE_VERSION:-11.6}'
     command: '--transaction-isolation=READ-COMMITTED --binlog-format=ROW'
     environment:
       MYSQL_DATABASE: '${NEXTCLOUD_MYSQL_DATABASE:-nextcloud}'
