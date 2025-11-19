@@ -5,8 +5,8 @@ services:
     depends_on:
       - 'sabnzbd'
     environment:
-      PUID: '${NZBHYDRA2_PUID:-1000}'
-      PGID: '${NZBHYDRA2_PGID:-1000}'
+      PUID: '${PUID:-1000}'
+      PGID: '${PGID:-1000}'
       TZ: '${TZ:-Europe/Paris}'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5076/']
@@ -26,4 +26,4 @@ services:
     restart: 'unless-stopped'
     volumes:
       - './config:/config'
-      - './downloads:/downloads'
+      - '${DOWNLOADS:-./downloads}:/downloads'

@@ -36,7 +36,14 @@
       "mcp__archon__find_versions",
       "mcp__archon__manage_version",
       "mcp__archon__health_check",
-      "mcp__archon__session_info"
+      "mcp__archon__session_info",
+      "WebSearch",
+      "WebFetch",
+      "SlashCommand(/prp-create:*)",
+      "Write(./*)",
+      "Write(c:\\Users\\Ollie\\Documents\\Github\\make-my-server\\*)",
+      "Edit(./*)",
+      "Edit(c:\\Users\\Ollie\\Documents\\Github\\make-my-server\\*)"
     ],
     "deny": [],
     "ask": [

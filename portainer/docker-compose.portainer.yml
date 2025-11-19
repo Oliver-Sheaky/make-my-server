@@ -1,6 +1,6 @@
 services:
   portainer:
-    image: 'portainer/portainer'
+    image: 'portainer/portainer-ce:${PORTAINER_IMAGE_VERSION:-lts}'
     labels:
       traefik.enable: true
       traefik.http.routers.portainer.middlewares: 'basic_auth@docker'

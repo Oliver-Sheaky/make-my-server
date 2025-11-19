@@ -46,7 +46,7 @@ Create a comprehensive PRP that enables **one-pass implementation success** thro
 
 ### Step 1: Choose Template
 
-Use `.claude\prp\prp_base.md` as your template structure - it contains all necessary sections and formatting.
+Use `.claude\prp\templates\prp_base.md` as your template structure - it contains all necessary sections and formatting.
 
 ### Step 2: Context Completeness Validation
 

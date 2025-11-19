@@ -4,8 +4,8 @@ services:
     # devices: # For passing through USB, serial or gpio devices.
     # - '/dev/ttyUSB0:/dev/ttyUSB0'
     environment:
-      GUID: 1000
-      PUID: 1000
+      PGID: '${PGID:-1000}'
+      PUID: '${PUID:-1000}'
     healthcheck:
       test: ['CMD', 'curl', '0.0.0.0:8123']
     labels:
